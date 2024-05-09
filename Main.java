@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Main {
 	public static void main(String[] args) {
 		ArrayList<Cliente> clientes = new ArrayList<>();
+		ArrayList<Conta> contas = new ArrayList<>();
 		int opcao = 0;
 		Scanner scanner = new Scanner(System.in);
 
@@ -18,33 +19,72 @@ public class Main {
 				case 1: // CONTA
 					// Operações relacionadas a Conta
 					System.out.print("Digite o CPF do cliente para procurar: ");
-					String cpfConta = scanner.next();
+					String cpfCliente = scanner.next();
 					scanner.nextLine(); // Consome a quebra de linha
 
-					Cliente clienteExistente = null;
+					// saber se CPF é cliente
+					boolean clienteEncontrado = false;
 					for (Cliente cliente : clientes) {
-						if (cliente.getCpf().equals(cpfConta)) {
-							clienteExistente = cliente;
+						// Verifica se o cliente já existe
+						if (cliente.getCpf().equals(cpfCliente)) {
+							clienteEncontrado = true;
+							System.out.println("Cliente encontrado!");
+
+							// Verifica se o cliente possui conta
+							if (cliente.getConta()) {
+								System.out.println("O cliente possui conta!");
+
+							} else {
+								System.out.println("O cliente não possui uma conta!");
+								Conta novaConta = new Conta();
+								System.out.println("Criando conta para o cliente");
+								novaConta.criarConta(cpfCliente);
+								cliente.setConta(true);
+								contas.add(novaConta);
+
+							}
 							break;
 						}
 					}
 
-					if (clienteExistente != null) {
-						System.out.println("Conta já existente para este cliente.");
-						// Lógica para criar ou gerenciar contas existentes
-					} else {
-						System.out
-								.print("Cliente não encontrado. Deseja criar um novo cliente para criar a conta? (s/n): ");
-						String criarNovoCliente = scanner.next();
-						scanner.nextLine(); // Consome a quebra de linha
-
-						if (criarNovoCliente.equalsIgnoreCase("s")) {
-							Cliente novoCliente = new Cliente();
-							clientes.add(novoCliente.criarConta());
-						} else {
-							System.out.println("Operação cancelada.");
-						}
+					if (!clienteEncontrado) {
+						System.out.println("Cliente não encontrado!");
 					}
+
+					/*
+					 * boolean fazerConta = true;
+					 * for (Conta conta : contas) {
+					 * //System.out.println("Numero do CPF" + cliente.getCpf());
+					 * if (conta.getCpf().equals(cpfCliente)) {
+					 * //novaConta = conta;
+					 * System.out.println("Cliente ja tem conta");
+					 * fazerConta = false;
+					 * break;
+					 * }
+					 * }
+					 * 
+					 * if (fazerConta == true) {
+					 * // Lógica para criar ou gerenciar contas existentes
+					 * Conta novaConta = new Conta();
+					 * System.out.println("Criando conta para o cliente");
+					 * novaConta.criarConta(cpfCliente);
+					 * contas.add(novaConta);
+					 * } else {
+					 * System.out.println("Conta já existente para este cliente.");
+					 * 
+					 * /*System.out
+					 * .print("Cliente não tem conta. Deseja criar uma nova Conta? (s/n): ");
+					 * String criarNovoCliente = scanner.next();
+					 * scanner.nextLine(); // Consome a quebra de linha
+					 * 
+					 * if (criarNovoCliente.equalsIgnoreCase("s")) {
+					 * novaConta.criarConta(cpfCliente);
+					 * contas.add(novaConta);
+					 * } else {
+					 * System.out.println("Operação cancelada.");
+					 * }
+					 */
+					// }
 					break;
 
 				case 2: // CLIENTE
@@ -55,7 +95,7 @@ public class Main {
 
 					if (escolhaCliente == 1) {
 						Cliente novoCliente = new Cliente();
-						clientes.add(novoCliente.criarConta());
+						clientes.add(novoCliente.criarCliente());
 					} else if (escolhaCliente == 2) {
 						System.out.print("Digite o CPF do cliente para excluir: ");
 						String cpfExcluir = scanner.nextLine();
@@ -65,11 +105,82 @@ public class Main {
 					break;
 
 				case 3: // REALIZAR OPERAÇÕES
+					MenuOperacoes menuOperacoes = new MenuOperacoes("Menu Operacoes",
+							Arrays.asList("Depositar", "Sacar"));
+					int op = menuOperacoes.getSelection();
+
+					switch (op) {
+						case 1:
+
+							System.out.print("Digite o CPF do cliente para depositar: ");
+							String cpfConta = scanner.next();
+							scanner.nextLine(); // Consome a quebra de linha
+
+							for (Conta conta : contas) {
+								// System.out.println("Numero do CPF" + cliente.getCpf());
+								if (conta.getCPF().equals(cpfConta)) {
+									// novaConta = conta;
+									System.out.println("Realizar deposito");
+									System.out.print("Digite o valor para depositar: ");
+									String valor = scanner.next();
+									scanner.nextLine(); // Consome a quebra de linha
+
+									conta.Depositar(Float.valueOf(valor));
+
+									break;
+								}
+							}
+
+							/*
+							 * clienteExistente = null;
+							 * for (Cliente cliente : clientes) {
+							 * if (cliente.getCpf().equals(cpfConta)) {
+							 * ClienteExistente = cliente;
+							 * break;
+							 * }
+							 * }
+							 */
+
+							break;
+
+						case 2:
+							System.out.print("Digite o CPF do cliente para sacar: ");
+							cpfConta = scanner.next();
+							scanner.nextLine(); // Consome a quebra de linha
+
+							for (Conta conta : contas) {
+								// System.out.println("Numero do CPF" + cliente.getCpf());
+								if (conta.getCPF().equals(cpfConta)) {
+									// novaConta = conta;
+									System.out.println("Realizar saque");
+									System.out.print("Digite o valor para sacar: ");
+									String valor = scanner.next();
+									scanner.nextLine(); // Consome a quebra de linha
+
+									conta.Sacar(Float.valueOf(valor));
+
+									break;
+								}
+							}
+							break;
+
+						default:
+							break;
+					}
 
 					break;
 
 				case 4:
-
+					System.out.println("MOSTAR CONTAS");
+					for (Conta conta : contas) {
+						// System.out.println("Numero do CPF" + cliente.getCpf());
+						System.out.println("Agencia: " + conta.getAgencia());
+						System.out.println("Tipo de conta: " + conta.getTipoConta());
+						System.out.println("Numero da conta: " + conta.getNumeroConta());
+						System.out.println("CPF: " + conta.getCPF());
+						System.out.println("Saldo: " + conta.getSaldo());
+						System.out.println();
+					}
 					break;
 				case 5:
 

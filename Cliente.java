@@ -4,15 +4,17 @@ public class Cliente {
     private String nome;
     private String genero;
     private String CPF;
+    private boolean temConta;
 
     public Cliente() {
-        
+
     }
 
     public Cliente(String nome, String cpf, String genero) {
         this.CPF = cpf;
         this.genero = genero;
         this.nome = nome;
+        this.temConta = false;
     }
 
     // Getter para o atributo nome
@@ -45,7 +47,17 @@ public class Cliente {
         this.CPF = cpf;
     }
 
-    public Cliente criarConta() {
+    // Getter para o atributo cpf
+    public boolean getConta() {
+        return temConta;
+    }
+
+    // Setter para o atributo cpf
+    public void setConta(boolean temConta) {
+        this.temConta = temConta;
+    }
+
+    public Cliente criarCliente() {
         Scanner s = new Scanner(System.in);
         System.out.println("Insira seu nome:");
         String nome = s.nextLine();
@@ -54,6 +66,6 @@ public class Cliente {
         System.out.println("Insira seu CPF:");
         String CPF = s.nextLine();
 
-        return new Cliente(nome, genero, CPF);
+        return new Cliente(nome, CPF, genero);
     }
 }
